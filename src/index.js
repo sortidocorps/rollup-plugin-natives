@@ -108,9 +108,12 @@ function nativePlugin(/**RollupPluginNativesOptions*/options) {
         let resolvedFull = Path.resolve(importer ? Path.dirname(importer) : '', importee);
 
         let nativePath = null;
-        if (/\.(node|dll)$/i.test(importee))
+        if (/\.(node|dll)$/i.test(importee)) {
+            if (Fs.pathExistsSync(resolvedFull + 'js') && !Fs.pathExistsSync(resolvedFull)) {
+                return null;
+            }
             nativePath = resolvedFull;
-        else if (Fs.pathExistsSync(resolvedFull + '.node'))
+        } else if (Fs.pathExistsSync(resolvedFull + '.node'))
             nativePath = resolvedFull + '.node';
         else if (Fs.pathExistsSync(resolvedFull + '.dll'))
             nativePath = resolvedFull + '.dll';
